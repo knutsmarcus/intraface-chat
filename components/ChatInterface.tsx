@@ -318,7 +318,7 @@ export default function ChatInterface() {
               <div
                 aria-hidden="true"
                 className="absolute inset-0 z-0 rounded-2xl pointer-events-none animate-rainbow-glow"
-                style={{ filter: "blur(12px)", transform: "scale(1.18)" }}
+                style={{ filter: "blur(3px)", inset: "-2px" }}
               />
             )}
           <div className="relative z-10 flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all">
