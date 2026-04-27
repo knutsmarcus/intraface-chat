@@ -35,20 +35,20 @@ export default function Message({ message, isCyberpunk = false }: MessageProps) 
     >
       {!isUser && (
         <motion.div
-          animate={message.isStreaming ? { opacity: [1, 0.45, 1] } : { opacity: 1 }}
+          animate={message.isStreaming ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
           transition={message.isStreaming ? { repeat: Infinity, duration: 1.4, ease: "easeInOut" } : {}}
-          className={`w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5 ${
+          className={`w-8 h-8 mr-3 flex-shrink-0 mt-1 overflow-hidden ${
             cp
-              ? "rounded-none bg-[#FCE300] border border-[#FCE300]"
-              : "rounded-full bg-gray-900"
+              ? "rounded-none border border-[#FCE300] shadow-[0_0_8px_rgba(252,227,0,0.4)]"
+              : "rounded-full"
           }`}
         >
           <Image
-            src="/intraface-logo.svg"
-            alt="Intraface"
-            width={20}
-            height={20}
-            className={`w-full h-full ${cp ? "" : "invert"}`}
+            src="/marcus.jpg"
+            alt="Marcus"
+            width={32}
+            height={32}
+            className={`w-full h-full object-cover ${cp ? "[filter:contrast(1.3)_brightness(0.85)_sepia(1)_saturate(2)_hue-rotate(-20deg)]" : ""}`}
           />
         </motion.div>
       )}

@@ -153,10 +153,26 @@ export default function ChatInterface() {
   const hasMessages = items.length > 0;
 
   return (
-    <div className={`flex flex-col h-screen transition-colors duration-500 ${cp ? "bg-[#0A0A0F] cp-scanlines" : "bg-white"}`}>
+    <div className={`flex flex-col h-screen relative transition-colors duration-500 ${cp ? "bg-[#0A0A0F] cp-scanlines" : "bg-white"}`}>
+
+      {/* Tokyo cyberpunk hero background */}
+      {cp && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: "url(/tokyo-night.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.16,
+            filter: "saturate(1.4) contrast(1.1) blur(1px)",
+            zIndex: 0,
+          }}
+        />
+      )}
 
       {/* Header */}
-      <header className={`flex items-center justify-between px-6 py-4 border-b transition-colors duration-500 ${cp ? "bg-[#0A0A0F] border-[#FCE300]/60" : "border-gray-100"}`}>
+      <header className={`relative z-10 flex items-center justify-between px-6 py-4 border-b transition-colors duration-500 ${cp ? "bg-[#0A0A0F]/85 backdrop-blur border-[#FCE300]/60" : "border-gray-100"}`}>
         <div className="flex items-center gap-3">
           <Image
             src="/intraface-logo.svg"
@@ -206,7 +222,7 @@ export default function ChatInterface() {
       </header>
 
       {/* Messages */}
-      <main className={`flex-1 overflow-y-auto px-4 py-6 transition-colors duration-500 ${cp ? "bg-[#0A0A0F]" : ""}`}>
+      <main className={`relative z-10 flex-1 overflow-y-auto px-4 py-6 transition-colors duration-500 ${cp ? "" : ""}`}>
         <div className="max-w-2xl mx-auto h-full flex flex-col">
           {!hasMessages && (
             <motion.div
@@ -271,10 +287,10 @@ export default function ChatInterface() {
                     transition={{ type: "spring", stiffness: 500, damping: 36 }}
                     className="flex justify-start mb-4"
                   >
-                    <div className={`w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5 ${
-                      cp ? "rounded-none bg-[#FCE300]" : "rounded-full bg-gray-900"
+                    <div className={`w-8 h-8 mr-3 flex-shrink-0 mt-1 overflow-hidden ${
+                      cp ? "rounded-none border border-[#FCE300] shadow-[0_0_8px_rgba(252,227,0,0.4)]" : "rounded-full"
                     }`}>
-                      <Image src="/intraface-logo.svg" alt="Intraface" width={20} height={20} className={`w-full h-full ${cp ? "" : "invert"}`} />
+                      <Image src="/marcus.jpg" alt="Marcus" width={32} height={32} className={`w-full h-full object-cover ${cp ? "[filter:contrast(1.3)_brightness(0.85)_sepia(1)_saturate(2)_hue-rotate(-20deg)]" : ""}`} />
                     </div>
                     <MeetingBookingForm onBooked={handleBookingConfirmed} isCyberpunk={cp} />
                   </motion.div>
@@ -345,7 +361,7 @@ export default function ChatInterface() {
       )}
 
       {/* Input area */}
-      <div className={`border-t px-4 py-4 transition-colors duration-500 ${cp ? "border-[#FCE300]/60 bg-[#0A0A0F]" : "border-gray-100"}`}>
+      <div className={`relative z-10 border-t px-4 py-4 transition-colors duration-500 ${cp ? "border-[#FCE300]/60 bg-[#0A0A0F]/85 backdrop-blur" : "border-gray-100"}`}>
         <div className="max-w-2xl mx-auto">
           <div className="relative">
             {/* Glow layer — rainbow in default, neon pulse applied directly in cp */}
