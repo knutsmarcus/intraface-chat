@@ -26,11 +26,32 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@keyframes input-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(17, 24, 39, 0); }
-  50% { box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.07), 0 0 24px rgba(17, 24, 39, 0.05); }
+/* Rainbow radiance on prompt field */
+@property --rainbow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }
 
-.animate-input-glow {
-  animation: input-glow 2.8s ease-in-out infinite;
+@keyframes rainbow-rotate {
+  to { --rainbow-angle: 360deg; }
+}
+
+@keyframes glow-appear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-rainbow-glow {
+  background: conic-gradient(
+    from var(--rainbow-angle),
+    rgba(239, 68, 68, 0.8),
+    rgba(245, 158, 11, 0.8),
+    rgba(34, 197, 94, 0.8),
+    rgba(59, 130, 246, 0.8),
+    rgba(168, 85, 247, 0.8),
+    rgba(236, 72, 153, 0.8),
+    rgba(239, 68, 68, 0.8)
+  );
+  animation: rainbow-rotate 6s linear infinite, glow-appear 1.2s ease forwards;
 }

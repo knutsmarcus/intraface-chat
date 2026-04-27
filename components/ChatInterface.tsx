@@ -313,7 +313,15 @@ export default function ChatInterface() {
       {/* Input area */}
       <div className="border-t border-gray-100 px-4 py-4">
         <div className="max-w-2xl mx-auto">
-          <div className={`flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all ${!hasMessages ? "animate-input-glow" : ""}`}>
+          <div className="relative">
+            {!hasMessages && (
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 z-0 rounded-2xl pointer-events-none animate-rainbow-glow"
+                style={{ filter: "blur(12px)", transform: "scale(1.18)" }}
+              />
+            )}
+          <div className="relative z-10 flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all">
             <label htmlFor="chat-input" className="sr-only">Chat message</label>
             <textarea
               ref={inputRef}
@@ -349,6 +357,7 @@ export default function ChatInterface() {
                 </svg>
               </motion.button>
             </div>
+          </div>
           </div>
           <p className="text-xs text-center text-gray-300 mt-2">
             Powered by Claude · intraface.se
