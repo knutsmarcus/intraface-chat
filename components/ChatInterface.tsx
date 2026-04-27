@@ -168,11 +168,11 @@ export default function ChatInterface() {
       <header className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <Image
-            src="/intraface-logo-blk.png"
+            src="/intraface-logo.svg"
             alt="Intraface"
-            width={100}
-            height={32}
-            className="h-8 w-auto"
+            width={90}
+            height={24}
+            className="h-5 w-auto"
             priority
           />
           <div>
@@ -195,16 +195,6 @@ export default function ChatInterface() {
         <div className="max-w-2xl mx-auto">
           {!hasMessages && (
             <div className="text-center py-16">
-              <div className="mx-auto mb-5">
-                <Image
-                  src="/intraface-logo-blk.png"
-                  alt="Intraface"
-                  width={160}
-                  height={50}
-                  className="h-12 w-auto"
-                  priority
-                />
-              </div>
               <h1 className="text-xl font-semibold text-gray-900 mb-2">
                 Hi, I&apos;m Marcus&apos;s AI assistant
               </h1>
