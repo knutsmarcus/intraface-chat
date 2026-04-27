@@ -184,7 +184,7 @@ export default function ChatInterface() {
           href="https://linkedin.com/in/knutsmarcushansson"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-gray-400 hover:text-gray-700 transition-colors"
+          className="text-xs text-gray-500 hover:text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded"
         >
           LinkedIn →
         </a>
@@ -206,7 +206,7 @@ export default function ChatInterface() {
                   <button
                     key={prompt}
                     onClick={() => sendMessage(prompt)}
-                    className="text-sm px-4 py-2 border border-gray-200 rounded-full text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                    className="text-sm px-4 py-2 border border-gray-200 rounded-full text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
                   >
                     {prompt}
                   </button>
@@ -215,6 +215,7 @@ export default function ChatInterface() {
             </div>
           )}
 
+          <div role="log" aria-live="polite" aria-label="Chat messages">
           {items.map((item, idx) => {
             if (item.type === "message") {
               return <Message key={item.message.id} message={item.message} />;
@@ -242,6 +243,7 @@ export default function ChatInterface() {
               );
             }
           })}
+          </div>
 
           <div ref={bottomRef} />
         </div>
@@ -252,25 +254,27 @@ export default function ChatInterface() {
         <div className="border-t border-gray-100 px-4 py-3 bg-gray-50">
           <div className="max-w-2xl mx-auto">
             <p className="text-xs font-medium text-gray-600 mb-2">Paste job description</p>
+            <label htmlFor="job-description-input" className="sr-only">Job description</label>
             <textarea
+              id="job-description-input"
               autoFocus
               rows={5}
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-gray-400 resize-none bg-white"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 resize-none bg-white"
               placeholder="Paste the full job description here..."
             />
             <div className="flex gap-2 mt-2">
               <button
                 onClick={sendJobDescription}
                 disabled={!jobDescription.trim()}
-                className="text-xs bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors"
+                className="text-xs bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
               >
                 Analyse fit
               </button>
               <button
                 onClick={() => { setShowJobPaste(false); setJobDescription(""); }}
-                className="text-xs text-gray-500 px-4 py-2 rounded-lg hover:text-gray-800 transition-colors"
+                className="text-xs text-gray-500 px-4 py-2 rounded-lg hover:text-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
               >
                 Cancel
               </button>
@@ -282,9 +286,11 @@ export default function ChatInterface() {
       {/* Input area */}
       <div className="border-t border-gray-100 px-4 py-4">
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:border-gray-400 transition-colors">
+          <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all">
+            <label htmlFor="chat-input" className="sr-only">Chat message</label>
             <textarea
               ref={inputRef}
+              id="chat-input"
               rows={1}
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -297,9 +303,9 @@ export default function ChatInterface() {
               <button
                 onClick={() => setShowJobPaste((v) => !v)}
                 title="Check job fit"
-                className="flex items-center gap-1 px-2 py-1 text-gray-400 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100"
+                className="flex items-center gap-1 px-2 py-1 text-gray-500 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-1"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75a2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
                 </svg>
                 <span className="text-xs">Job fit</span>
@@ -307,9 +313,10 @@ export default function ChatInterface() {
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || isLoading}
-                className="p-1.5 bg-gray-900 text-white rounded-lg hover:bg-gray-700 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                aria-label="Send message"
+                className="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-700 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
               </button>

@@ -69,6 +69,9 @@ export default function MeetingBookingForm({ onBooked }: MeetingBookingFormProps
     }
   }
 
+  const inputClass =
+    "w-full border border-gray-300 rounded-lg px-3 py-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-0";
+
   return (
     <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm p-5 max-w-[80%] text-sm shadow-sm">
       <p className="font-semibold text-gray-900 mb-4">Book a meeting with Marcus</p>
@@ -78,7 +81,7 @@ export default function MeetingBookingForm({ onBooked }: MeetingBookingFormProps
       )}
 
       {slotsError && (
-        <p className="text-red-500 text-xs">
+        <p role="alert" className="text-red-600 text-xs">
           Could not load available times right now. Please email marcus@intraface.se directly.
         </p>
       )}
@@ -86,77 +89,89 @@ export default function MeetingBookingForm({ onBooked }: MeetingBookingFormProps
       {!loadingSlots && !slotsError && (
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Slot picker */}
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+          <fieldset>
+            <legend className="block text-xs font-medium text-gray-600 mb-1">
               Available times (next 7 days)
-            </label>
+            </legend>
             <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
               {slots.map((slot) => (
                 <button
                   key={slot.start}
                   type="button"
+                  aria-pressed={selectedSlot?.start === slot.start}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`text-xs px-3 py-2 rounded-lg border text-left transition-colors ${
+                  className={`text-xs px-3 py-2 rounded-lg border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-1 ${
                     selectedSlot?.start === slot.start
                       ? "bg-gray-900 text-white border-gray-900"
-                      : "border-gray-200 text-gray-700 hover:border-gray-400"
+                      : "border-gray-300 text-gray-700 hover:border-gray-500"
                   }`}
                 >
                   {slot.label}
                 </button>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Your name</label>
+              <label htmlFor="booking-name" className="block text-xs font-medium text-gray-600 mb-1">
+                Your name
+              </label>
               <input
+                id="booking-name"
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-gray-400"
+                className={inputClass}
                 placeholder="Jane Smith"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Your email</label>
+              <label htmlFor="booking-email" className="block text-xs font-medium text-gray-600 mb-1">
+                Your email
+              </label>
               <input
+                id="booking-email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-gray-400"
+                className={inputClass}
                 placeholder="jane@company.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label htmlFor="booking-topic" className="block text-xs font-medium text-gray-600 mb-1">
               What would you like to discuss? (optional)
             </label>
             <textarea
+              id="booking-topic"
               rows={2}
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-gray-400 resize-none"
+              className={`${inputClass} resize-none`}
               placeholder="Role discussion, portfolio review, general intro..."
             />
           </div>
 
           {submitError && (
-            <p className="text-red-500 text-xs">{submitError}</p>
+            <p role="alert" className="text-red-600 text-xs">{submitError}</p>
           )}
 
           <button
             type="submit"
             disabled={!selectedSlot || !name || !email || submitting}
-            className="w-full bg-gray-900 text-white text-xs font-medium py-2.5 rounded-lg hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-gray-900 text-white text-xs font-medium py-2.5 rounded-lg hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
           >
             {submitting ? "Booking..." : "Confirm meeting"}
           </button>
+
+          <p className="text-xs text-gray-400 text-center">
+            Your name and email are used only to create the calendar invite and are not shared with third parties.
+          </p>
         </form>
       )}
     </div>
