@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 
 export type Role = "user" | "assistant";
@@ -22,8 +23,8 @@ export default function Message({ message }: MessageProps) {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       {!isUser && (
-        <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-bold mr-3 flex-shrink-0 mt-1">
-          M
+        <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5">
+          <Image src="/intraface-logo.svg" alt="Intraface" width={20} height={20} className="w-full h-full invert" />
         </div>
       )}
       <div
@@ -51,7 +52,7 @@ export default function Message({ message }: MessageProps) {
         )}
       </div>
       {isUser && (
-        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold ml-3 flex-shrink-0 mt-1">
+        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xs font-semibold ml-3 flex-shrink-0 mt-1">
           You
         </div>
       )}
