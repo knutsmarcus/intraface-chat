@@ -15,12 +15,14 @@ export interface MessageType {
 
 interface MessageProps {
   message: MessageType;
+  isCyberpunk?: boolean;
 }
 
 const SPRING = { type: "spring", stiffness: 500, damping: 36 } as const;
 
-export default function Message({ message }: MessageProps) {
+export default function Message({ message, isCyberpunk = false }: MessageProps) {
   const isUser = message.role === "user";
+  const cp = isCyberpunk;
   const displayContent = message.content.replace("[SHOW_BOOKING_FORM]", "").trim();
   const isThinking = message.isStreaming && !displayContent;
 
@@ -35,49 +37,70 @@ export default function Message({ message }: MessageProps) {
         <motion.div
           animate={message.isStreaming ? { opacity: [1, 0.45, 1] } : { opacity: 1 }}
           transition={message.isStreaming ? { repeat: Infinity, duration: 1.4, ease: "easeInOut" } : {}}
-          className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5"
+          className={`w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5 ${
+            cp
+              ? "rounded-none bg-[#FCE300] border border-[#FCE300]"
+              : "rounded-full bg-gray-900"
+          }`}
         >
-          <Image src="/intraface-logo.svg" alt="Intraface" width={20} height={20} className="w-full h-full invert" />
+          <Image
+            src="/intraface-logo.svg"
+            alt="Intraface"
+            width={20}
+            height={20}
+            className={`w-full h-full ${cp ? "" : "invert"}`}
+          />
         </motion.div>
       )}
 
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+        className={`max-w-[80%] px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? "bg-gray-900 text-white rounded-br-sm whitespace-pre-wrap"
-            : "bg-gray-100 text-gray-900 rounded-bl-sm"
+            ? cp
+              ? "rounded-none bg-[#FCE300] text-black font-mono whitespace-pre-wrap border border-[#FCE300]"
+              : "rounded-2xl rounded-br-sm bg-gray-900 text-white whitespace-pre-wrap"
+            : cp
+              ? "rounded-none bg-[#12121A] text-[#00D4FF] border border-[#FCE300]/40 font-mono"
+              : "rounded-2xl rounded-bl-sm bg-gray-100 text-gray-900"
         }`}
       >
         {isThinking ? (
-          <div className="flex gap-1.5 items-center py-0.5 px-0.5">
-            {[0, 160, 320].map((delay) => (
-              <span
-                key={delay}
-                className="w-2 h-2 rounded-full bg-gray-400 inline-block animate-bounce"
-                style={{ animationDelay: `${delay}ms`, animationDuration: "900ms" }}
-              />
-            ))}
-          </div>
+          cp ? (
+            <span className="cp-yellow font-mono text-base cp-blink">█</span>
+          ) : (
+            <div className="flex gap-1.5 items-center py-0.5 px-0.5">
+              {[0, 160, 320].map((delay) => (
+                <span
+                  key={delay}
+                  className="w-2 h-2 rounded-full bg-gray-400 inline-block animate-bounce"
+                  style={{ animationDelay: `${delay}ms`, animationDuration: "900ms" }}
+                />
+              ))}
+            </div>
+          )
         ) : isUser ? (
           displayContent
         ) : (
-          <div className="prose prose-sm prose-gray max-w-none
-            prose-headings:font-semibold prose-headings:text-gray-900 prose-headings:mt-3 prose-headings:mb-1
-            prose-p:my-1 prose-p:leading-relaxed
-            prose-ul:my-1 prose-ul:pl-4 prose-li:my-0.5
-            prose-ol:my-1 prose-ol:pl-4
-            prose-strong:font-semibold prose-strong:text-gray-900
-            prose-hr:my-2 prose-hr:border-gray-300">
+          <div className={cp
+            ? "prose-none [&_strong]:text-[#FCE300] [&_h1]:text-[#FCE300] [&_h2]:text-[#FCE300] [&_h3]:text-[#FCE300] [&_ul]:pl-4 [&_ol]:pl-4 [&_li]:my-0.5 [&_p]:my-1 [&_hr]:border-[#FCE300]/20"
+            : "prose prose-sm prose-gray max-w-none prose-headings:font-semibold prose-headings:text-gray-900 prose-headings:mt-3 prose-headings:mb-1 prose-p:my-1 prose-p:leading-relaxed prose-ul:my-1 prose-ul:pl-4 prose-li:my-0.5 prose-ol:my-1 prose-ol:pl-4 prose-strong:font-semibold prose-strong:text-gray-900 prose-hr:my-2 prose-hr:border-gray-300"
+          }>
             <ReactMarkdown>{displayContent}</ReactMarkdown>
           </div>
         )}
         {!isThinking && message.isStreaming && (
-          <span className="inline-block w-1.5 h-4 bg-gray-400 ml-0.5 animate-pulse rounded-sm" />
+          cp
+            ? <span className="cp-yellow font-mono ml-1 cp-blink">_</span>
+            : <span className="inline-block w-1.5 h-4 bg-gray-400 ml-0.5 animate-pulse rounded-sm" />
         )}
       </div>
 
       {isUser && (
-        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xs font-semibold ml-3 flex-shrink-0 mt-1">
+        <div className={`w-8 h-8 flex items-center justify-center text-xs font-semibold ml-3 flex-shrink-0 mt-1 ${
+          cp
+            ? "rounded-none bg-[#12121A] border border-[#FCE300]/40 text-[#FCE300] font-mono"
+            : "rounded-full bg-gray-200 text-gray-600"
+        }`}>
           You
         </div>
       )}

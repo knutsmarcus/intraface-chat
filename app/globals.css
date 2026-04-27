@@ -26,7 +26,61 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Rainbow radiance on prompt field */
+/* ── Cyberpunk Theme ───────────────────────────────────────── */
+
+/* Scanlines CRT overlay */
+.cp-scanlines::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.07) 2px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Glitch text */
+@keyframes cp-glitch {
+  0%, 84%, 100% { transform: none; clip-path: none; }
+  85%  { transform: translateX(-4px); clip-path: polygon(0 10%, 100% 10%, 100% 38%, 0 38%); }
+  87%  { transform: translateX(4px);  clip-path: polygon(0 58%, 100% 58%, 100% 80%, 0 80%); }
+  89%  { transform: none; clip-path: none; }
+}
+@keyframes cp-glitch-ghost {
+  0%, 84%, 100% { opacity: 0; transform: none; clip-path: none; }
+  85%  { opacity: 1; transform: translateX(4px);  clip-path: polygon(0 10%, 100% 10%, 100% 38%, 0 38%); color: #00D4FF; }
+  87%  { opacity: 1; transform: translateX(-4px); clip-path: polygon(0 58%, 100% 58%, 100% 80%, 0 80%); color: #FF003C; }
+  89%  { opacity: 0; transform: none; clip-path: none; }
+}
+.cp-glitch { position: relative; animation: cp-glitch 6s ease-in-out infinite; }
+.cp-glitch::before {
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  pointer-events: none;
+  animation: cp-glitch-ghost 6s ease-in-out infinite;
+}
+
+/* Neon text */
+.cp-yellow { color: #FCE300; text-shadow: 0 0 8px rgba(252,227,0,.55), 0 0 20px rgba(252,227,0,.25); }
+.cp-cyan   { color: #00D4FF; text-shadow: 0 0 8px rgba(0,212,255,.55), 0 0 20px rgba(0,212,255,.25); }
+
+/* Neon input pulse */
+@keyframes cp-input-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(252,227,0,.35), 0 0 14px rgba(252,227,0,.15); }
+  50%       { box-shadow: 0 0 12px rgba(252,227,0,.6),  0 0 28px rgba(252,227,0,.25), 0 0 50px rgba(0,212,255,.1); }
+}
+.cp-input-pulse { animation: cp-input-pulse 2.5s ease-in-out infinite; }
+
+/* Terminal cursor blink */
+@keyframes cp-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.cp-blink { animation: cp-blink 1s step-end infinite; }
+
+/* ── Rainbow radiance on prompt field ──────────────────────── */
 @property --rainbow-angle {
   syntax: '<angle>';
   initial-value: 0deg;

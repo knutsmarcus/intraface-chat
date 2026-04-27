@@ -23,6 +23,8 @@ type ChatItem =
   | { type: "booking-form" }
   | { type: "booking-confirmed"; text: string };
 
+type Theme = "default" | "cyberpunk";
+
 export default function ChatInterface() {
   const [items, setItems] = useState<ChatItem[]>([]);
   const [input, setInput] = useState("");
@@ -30,11 +32,23 @@ export default function ChatInterface() {
   const [showJobPaste, setShowJobPaste] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [bookingShown, setBookingShown] = useState(false);
+  const [theme, setTheme] = useState<Theme>("default");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // Conversation history for Claude (only actual messages)
   const historyRef = useRef<{ role: "user" | "assistant"; content: string }[]>([]);
+
+  const cp = theme === "cyberpunk";
+
+  useEffect(() => {
+    const saved = localStorage.getItem("intraface-theme") as Theme | null;
+    if (saved === "cyberpunk") setTheme("cyberpunk");
+  }, []);
+
+  function toggleTheme() {
+    const next: Theme = cp ? "default" : "cyberpunk";
+    setTheme(next);
+    localStorage.setItem("intraface-theme", next);
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,12 +63,7 @@ export default function ChatInterface() {
     historyRef.current = [...historyRef.current, { role: "user", content: text }];
 
     const assistantId = nextId();
-    const assistantMessage: MessageType = {
-      id: assistantId,
-      role: "assistant",
-      content: "",
-      isStreaming: true,
-    };
+    const assistantMessage: MessageType = { id: assistantId, role: "assistant", content: "", isStreaming: true };
 
     setItems((prev) => [
       ...prev,
@@ -77,7 +86,6 @@ export default function ChatInterface() {
         const { done, value } = await reader.read();
         if (done) break;
         fullText += decoder.decode(value, { stream: true });
-
         const displayText = fullText.replace("[SHOW_BOOKING_FORM]", "").trimEnd();
         setItems((prev) =>
           prev.map((item) =>
@@ -88,18 +96,10 @@ export default function ChatInterface() {
         );
       }
 
-      // Finalise
       setItems((prev) =>
         prev.map((item) =>
           item.type === "message" && item.message.id === assistantId
-            ? {
-                ...item,
-                message: {
-                  ...item.message,
-                  content: fullText.replace("[SHOW_BOOKING_FORM]", "").trim(),
-                  isStreaming: false,
-                },
-              }
+            ? { ...item, message: { ...item.message, content: fullText.replace("[SHOW_BOOKING_FORM]", "").trim(), isStreaming: false } }
             : item
         )
       );
@@ -109,7 +109,6 @@ export default function ChatInterface() {
         { role: "assistant", content: fullText.replace("[SHOW_BOOKING_FORM]", "").trim() },
       ];
 
-      // Show booking form if Claude triggered it
       if (fullText.includes("[SHOW_BOOKING_FORM]") && !bookingShown) {
         setBookingShown(true);
         setItems((prev) => [...prev, { type: "booking-form" }]);
@@ -118,14 +117,7 @@ export default function ChatInterface() {
       setItems((prev) =>
         prev.map((item) =>
           item.type === "message" && item.message.id === assistantId
-            ? {
-                ...item,
-                message: {
-                  ...item.message,
-                  content: "Sorry, something went wrong. Please try again.",
-                  isStreaming: false,
-                },
-              }
+            ? { ...item, message: { ...item.message, content: "Sorry, something went wrong. Please try again.", isStreaming: false } }
             : item
         )
       );
@@ -155,44 +147,66 @@ export default function ChatInterface() {
       ...prev.filter((i) => i.type !== "booking-form"),
       { type: "booking-confirmed", text: confirmationText },
     ]);
-    historyRef.current = [
-      ...historyRef.current,
-      { role: "assistant", content: confirmationText },
-    ];
+    historyRef.current = [...historyRef.current, { role: "assistant", content: confirmationText }];
   }
 
   const hasMessages = items.length > 0;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className={`flex flex-col h-screen transition-colors duration-500 ${cp ? "bg-[#0A0A0F] cp-scanlines" : "bg-white"}`}>
+
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <header className={`flex items-center justify-between px-6 py-4 border-b transition-colors duration-500 ${cp ? "bg-[#0A0A0F] border-[#FCE300]/60" : "border-gray-100"}`}>
         <div className="flex items-center gap-3">
           <Image
             src="/intraface-logo.svg"
             alt="Intraface"
             width={90}
             height={24}
-            className="h-5 w-auto"
+            className={`h-5 w-auto transition-all duration-500 ${cp ? "[filter:invert(86%)_sepia(77%)_saturate(600%)_hue-rotate(3deg)_brightness(105%)]" : ""}`}
             priority
           />
           <div>
-            <p className="text-sm font-semibold text-gray-900">Marcus Hansson</p>
-            <p className="text-xs text-gray-600">Product Manager · UX Leader · AI Consultant</p>
+            <p className={`font-semibold transition-colors duration-300 ${cp ? "text-xs cp-yellow font-mono tracking-widest uppercase" : "text-sm text-gray-900"}`}>
+              {cp ? "MARCUS.HANSSON" : "Marcus Hansson"}
+            </p>
+            <p className={`text-xs transition-colors duration-300 ${cp ? "cp-cyan font-mono tracking-wider text-[10px]" : "text-gray-600"}`}>
+              {cp ? "PRODUCT_MGR // UX_LEAD // AI_CONSULTANT" : "Product Manager · UX Leader · AI Consultant"}
+            </p>
           </div>
         </div>
-        <a
-          href="https://linkedin.com/in/knutsmarcushansson"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-gray-500 hover:text-gray-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded"
-        >
-          LinkedIn →
-        </a>
+
+        <div className="flex items-center gap-3">
+          <a
+            href="https://linkedin.com/in/knutsmarcushansson"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded ${
+              cp
+                ? "cp-cyan font-mono hover:text-white focus-visible:ring-[#FCE300]"
+                : "text-gray-500 hover:text-gray-700 focus-visible:ring-gray-900"
+            }`}
+          >
+            {cp ? "LINKEDIN ↗" : "LinkedIn →"}
+          </a>
+
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            title={cp ? "Switch to default theme" : "Switch to Cyberpunk theme"}
+            className={`text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
+              cp
+                ? "font-mono text-[#FCE300] border border-[#FCE300]/60 px-3 py-1 hover:bg-[#FCE300] hover:text-black focus-visible:ring-[#FCE300]"
+                : "text-gray-400 border border-gray-200 px-3 py-1 rounded-full hover:border-gray-400 hover:text-gray-700 focus-visible:ring-gray-900"
+            }`}
+          >
+            {cp ? "[ EXIT SIM ]" : "⚡ Cyberpunk"}
+          </button>
+        </div>
       </header>
 
       {/* Messages */}
-      <main className="flex-1 overflow-y-auto px-4 py-6">
+      <main className={`flex-1 overflow-y-auto px-4 py-6 transition-colors duration-500 ${cp ? "bg-[#0A0A0F]" : ""}`}>
         <div className="max-w-2xl mx-auto h-full flex flex-col">
           {!hasMessages && (
             <motion.div
@@ -204,16 +218,19 @@ export default function ChatInterface() {
               <motion.h1
                 variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                className="text-xl font-semibold text-gray-900 mb-2"
+                data-text={cp ? "HI, I'M MARCUS'S AI ASSISTANT" : undefined}
+                className={`mb-2 ${cp ? "cp-yellow font-mono uppercase tracking-wider text-xl cp-glitch" : "text-xl font-semibold text-gray-900"}`}
               >
-                Hi, I&apos;m Marcus&apos;s AI assistant
+                {cp ? "HI, I'M MARCUS'S AI ASSISTANT" : "Hi, I'm Marcus's AI assistant"}
               </motion.h1>
               <motion.p
                 variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                className="text-sm text-gray-500 mb-8 max-w-sm mx-auto"
+                className={`mb-8 max-w-sm mx-auto ${cp ? "cp-cyan font-mono text-xs tracking-wide" : "text-sm text-gray-500"}`}
               >
-                Ask me anything about Marcus&apos;s background, skills, or experience — or paste a job description to check the fit.
+                {cp
+                  ? "> ASK ABOUT MARCUS // PASTE JOB DESC // BOOK MEETING"
+                  : "Ask me anything about Marcus's background, skills, or experience — or paste a job description to check the fit."}
               </motion.p>
               <motion.div
                 className="flex flex-wrap gap-2 justify-center"
@@ -224,12 +241,16 @@ export default function ChatInterface() {
                     key={prompt}
                     variants={{ hidden: { opacity: 0, scale: 0.92 }, visible: { opacity: 1, scale: 1 } }}
                     transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={cp ? { backgroundColor: "#FCE300", color: "#000" } : { scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => sendMessage(prompt)}
-                    className="text-sm px-4 py-2 border border-gray-200 rounded-full text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
+                    className={`text-sm px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                      cp
+                        ? "border border-[#FCE300]/60 rounded-none text-[#FCE300] font-mono text-xs tracking-wide focus-visible:ring-[#FCE300]"
+                        : "border border-gray-200 rounded-full text-gray-600 hover:border-gray-400 hover:text-gray-900 focus-visible:ring-gray-900"
+                    }`}
                   >
-                    {prompt}
+                    {cp ? `> ${prompt.toUpperCase()}` : prompt}
                   </motion.button>
                 ))}
               </motion.div>
@@ -237,39 +258,38 @@ export default function ChatInterface() {
           )}
 
           <div role="log" aria-live="polite" aria-label="Chat messages">
-          {items.map((item, idx) => {
-            if (item.type === "message") {
-              return <Message key={item.message.id} message={item.message} />;
-            }
-            if (item.type === "booking-form") {
-              return (
-                <motion.div
-                  key={`booking-form-${idx}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 36 }}
-                  className="flex justify-start mb-4"
-                >
-                  <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5">
-                    <Image src="/intraface-logo.svg" alt="Intraface" width={20} height={20} className="w-full h-full invert" />
-                  </div>
-                  <MeetingBookingForm onBooked={handleBookingConfirmed} />
-                </motion.div>
-              );
-            }
-            if (item.type === "booking-confirmed") {
-              return (
-                <Message
-                  key={`booking-confirmed-${idx}`}
-                  message={{
-                    id: `confirmed-${idx}`,
-                    role: "assistant",
-                    content: item.text,
-                  }}
-                />
-              );
-            }
-          })}
+            {items.map((item, idx) => {
+              if (item.type === "message") {
+                return <Message key={item.message.id} message={item.message} isCyberpunk={cp} />;
+              }
+              if (item.type === "booking-form") {
+                return (
+                  <motion.div
+                    key={`booking-form-${idx}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                    className="flex justify-start mb-4"
+                  >
+                    <div className={`w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5 ${
+                      cp ? "rounded-none bg-[#FCE300]" : "rounded-full bg-gray-900"
+                    }`}>
+                      <Image src="/intraface-logo.svg" alt="Intraface" width={20} height={20} className={`w-full h-full ${cp ? "" : "invert"}`} />
+                    </div>
+                    <MeetingBookingForm onBooked={handleBookingConfirmed} isCyberpunk={cp} />
+                  </motion.div>
+                );
+              }
+              if (item.type === "booking-confirmed") {
+                return (
+                  <Message
+                    key={`booking-confirmed-${idx}`}
+                    message={{ id: `confirmed-${idx}`, role: "assistant", content: item.text }}
+                    isCyberpunk={cp}
+                  />
+                );
+              }
+            })}
           </div>
 
           <div ref={bottomRef} />
@@ -278,9 +298,11 @@ export default function ChatInterface() {
 
       {/* Job description paste area */}
       {showJobPaste && (
-        <div className="border-t border-gray-100 px-4 py-3 bg-gray-50">
+        <div className={`border-t px-4 py-3 transition-colors duration-300 ${cp ? "border-[#FCE300]/60 bg-[#0A0A0F]" : "border-gray-100 bg-gray-50"}`}>
           <div className="max-w-2xl mx-auto">
-            <p className="text-xs font-medium text-gray-600 mb-2">Paste job description</p>
+            <p className={`text-xs font-medium mb-2 ${cp ? "cp-yellow font-mono uppercase tracking-widest" : "text-gray-600"}`}>
+              {cp ? "// PASTE JOB DESCRIPTION" : "Paste job description"}
+            </p>
             <label htmlFor="job-description-input" className="sr-only">Job description</label>
             <textarea
               id="job-description-input"
@@ -288,22 +310,34 @@ export default function ChatInterface() {
               rows={5}
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 resize-none bg-white"
-              placeholder="Paste the full job description here..."
+              className={`w-full px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 ${
+                cp
+                  ? "border border-[#FCE300]/50 rounded-none bg-[#0A0A0F] text-[#FCE300] font-mono placeholder-[#FCE300]/30 focus-visible:ring-[#FCE300]"
+                  : "border border-gray-300 rounded-xl bg-white focus-visible:ring-gray-900"
+              }`}
+              placeholder={cp ? "> PASTE_JOB_DESCRIPTION_HERE..." : "Paste the full job description here..."}
             />
             <div className="flex gap-2 mt-2">
               <button
                 onClick={sendJobDescription}
                 disabled={!jobDescription.trim()}
-                className="text-xs bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 disabled:opacity-40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
+                className={`text-xs px-4 py-2 disabled:opacity-40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                  cp
+                    ? "rounded-none bg-[#FCE300] text-black font-mono uppercase tracking-wider hover:bg-white disabled:opacity-40 focus-visible:ring-[#FCE300]"
+                    : "rounded-lg bg-gray-900 text-white hover:bg-gray-700 focus-visible:ring-gray-900"
+                }`}
               >
-                Analyse fit
+                {cp ? "> ANALYSE_FIT" : "Analyse fit"}
               </button>
               <button
                 onClick={() => { setShowJobPaste(false); setJobDescription(""); }}
-                className="text-xs text-gray-500 px-4 py-2 rounded-lg hover:text-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
+                className={`text-xs px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                  cp
+                    ? "rounded-none text-[#FCE300] font-mono hover:text-white focus-visible:ring-[#FCE300]"
+                    : "rounded-lg text-gray-500 hover:text-gray-800 focus-visible:ring-gray-900"
+                }`}
               >
-                Cancel
+                {cp ? "// CANCEL" : "Cancel"}
               </button>
             </div>
           </div>
@@ -311,56 +345,72 @@ export default function ChatInterface() {
       )}
 
       {/* Input area */}
-      <div className="border-t border-gray-100 px-4 py-4">
+      <div className={`border-t px-4 py-4 transition-colors duration-500 ${cp ? "border-[#FCE300]/60 bg-[#0A0A0F]" : "border-gray-100"}`}>
         <div className="max-w-2xl mx-auto">
           <div className="relative">
-            {!hasMessages && (
+            {/* Glow layer — rainbow in default, neon pulse applied directly in cp */}
+            {!hasMessages && !cp && (
               <div
                 aria-hidden="true"
-                className="absolute inset-0 z-0 rounded-2xl pointer-events-none animate-rainbow-glow"
+                className="absolute z-0 rounded-2xl pointer-events-none animate-rainbow-glow"
                 style={{ filter: "blur(2px)", inset: "-1px" }}
               />
             )}
-          <div className="relative z-10 flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all">
-            <label htmlFor="chat-input" className="sr-only">Chat message</label>
-            <textarea
-              ref={inputRef}
-              id="chat-input"
-              rows={1}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask me anything about Marcus..."
-              className="flex-1 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none resize-none max-h-32"
-              style={{ minHeight: "24px" }}
-            />
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => setShowJobPaste((v) => !v)}
-                title="Check job fit"
-                className="flex items-center gap-1 px-2 py-1 text-gray-500 hover:text-gray-700 transition-colors rounded-lg hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-1"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75a2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
-                </svg>
-                <span className="text-xs">Job fit</span>
-              </button>
-              <motion.button
-                onClick={() => sendMessage(input)}
-                disabled={!input.trim() || isLoading}
-                aria-label="Send message"
-                whileTap={!input.trim() || isLoading ? {} : { scale: 0.88 }}
-                className="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                </svg>
-              </motion.button>
+
+            <div className={`relative z-10 flex items-end gap-2 px-4 py-3 transition-all ${
+              cp
+                ? `bg-[#12121A] border border-[#FCE300]/60 rounded-none focus-within:ring-1 focus-within:ring-[#FCE300] focus-within:border-[#FCE300] ${!hasMessages ? "cp-input-pulse" : ""}`
+                : "bg-gray-50 border border-gray-200 rounded-2xl focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent"
+            }`}>
+              <label htmlFor="chat-input" className="sr-only">Chat message</label>
+              <textarea
+                ref={inputRef}
+                id="chat-input"
+                rows={1}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={cp ? "> JACK_IN..." : "Ask me anything about Marcus..."}
+                className={`flex-1 bg-transparent text-sm focus:outline-none resize-none max-h-32 ${
+                  cp ? "text-[#FCE300] placeholder-[#FCE300]/30 font-mono" : "text-gray-900 placeholder-gray-400"
+                }`}
+                style={{ minHeight: "24px" }}
+              />
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => setShowJobPaste((v) => !v)}
+                  title="Check job fit"
+                  className={`flex items-center gap-1 px-2 py-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
+                    cp
+                      ? "text-[#00D4FF] hover:text-white font-mono text-xs rounded-none focus-visible:ring-[#FCE300]"
+                      : "text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 focus-visible:ring-gray-900"
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75a2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                  </svg>
+                  <span className="text-xs">{cp ? "JOB_FIT" : "Job fit"}</span>
+                </button>
+                <motion.button
+                  onClick={() => sendMessage(input)}
+                  disabled={!input.trim() || isLoading}
+                  aria-label="Send message"
+                  whileTap={!input.trim() || isLoading ? {} : { scale: 0.88 }}
+                  className={`p-2.5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                    cp
+                      ? "bg-[#FCE300] text-black rounded-none hover:bg-white focus-visible:ring-[#FCE300]"
+                      : "bg-gray-900 text-white rounded-lg hover:bg-gray-700 focus-visible:ring-gray-900"
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                  </svg>
+                </motion.button>
+              </div>
             </div>
           </div>
-          </div>
-          <p className="text-xs text-center text-gray-300 mt-2">
-            Powered by Claude · intraface.se
+          <p className={`text-xs text-center mt-2 ${cp ? "text-[#FCE300]/20 font-mono" : "text-gray-300"}`}>
+            {cp ? "// POWERED BY CLAUDE · INTRAFACE.SE" : "Powered by Claude · intraface.se"}
           </p>
         </div>
       </div>
