@@ -170,7 +170,7 @@ export default function ChatInterface() {
             <p className={`font-semibold transition-colors duration-300 ${cp ? "text-xs cp-yellow font-mono tracking-widest uppercase" : "text-sm text-gray-900"}`}>
               {cp ? "MARCUS.HANSSON" : "Marcus Hansson"}
             </p>
-            <p className={`text-xs transition-colors duration-300 ${cp ? "cp-cyan font-mono tracking-wide" : "text-gray-600"}`}>
+            <p className={`text-xs transition-colors duration-300 ${cp ? "cp-cyan font-mono tracking-wider text-[10px]" : "text-gray-600"}`}>
               {cp ? "PRODUCT_MGR // UX_LEAD // AI_CONSULTANT" : "Product Manager · UX Leader · AI Consultant"}
             </p>
           </div>
@@ -409,7 +409,7 @@ export default function ChatInterface() {
               </div>
             </div>
           </div>
-          <p className={`text-xs text-center mt-2 ${cp ? "text-[#FCE300]/40 font-mono" : "text-gray-300"}`}>
+          <p className={`text-xs text-center mt-2 ${cp ? "text-[#FCE300]/20 font-mono" : "text-gray-300"}`}>
             {cp ? "// POWERED BY CLAUDE · INTRAFACE.SE" : "Powered by Claude · intraface.se"}
           </p>
         </div>
