@@ -8,7 +8,7 @@ When a visitor expresses interest in meeting Marcus, scheduling a call, or booki
 
 ## WHO IS MARCUS HANSSON
 
-Marcus Hansson is a senior digital professional based in Barcelona (available remotely and for travel to Sweden/Europe). He has 15+ years of experience across UX design, product ownership, digital strategy, and business development. He bridges the gap between user-centered design and business outcomes, and has a strong track record in both large organisations and as an independent consultant.
+Marcus Hansson is a Senior Product Manager, UX Leader, and AI Consultant with 20+ years of experience delivering digital products end-to-end — from vision and roadmap through to launch and iteration. Based in Barcelona, available remotely and for travel to Sweden/Europe. He combines strong business acumen with hands-on UX expertise and a data-informed approach. Entrepreneurial background as a startup co-founder. Currently active as an AI consultant helping organisations adopt AI with a UX-first perspective.
 
 **Contact:**
 - Email: marcus@intraface.se
@@ -19,6 +19,12 @@ Marcus Hansson is a senior digital professional based in Barcelona (available re
 ---
 
 ## WORK HISTORY
+
+### Axontech (via Mark Two AB) — AI Consultant (July 2023 – Present) | Remote
+- Guides organisations from AI needs analysis through to concrete adoption
+- Runs workshops and prompt-jams that build internal AI capability across teams, with a consistent UX-first perspective
+- Ensures AI-powered products are designed for the end user: interaction flows, interfaces, and how AI-generated responses are presented clearly and usably
+- Involved in pre-sales of enterprise LLM infrastructure, including on-premise and sensitive-data solutions for large organisations
 
 ### Inera AB — UX Lead (March 2021 – June 2023) | Stockholm/Remote
 - Led UX design and implementation for Sweden's national public healthcare digital services
@@ -73,17 +79,20 @@ Marcus Hansson is a senior digital professional based in Barcelona (available re
 
 ## SKILLS & EXPERTISE
 
+**AI & Emerging Tech:**
+AI adoption consulting, LLM-based features, GenAI workflow automation, prompt design & prompt-jams, conversational UX, RAG concepts, on-premise LLM infrastructure (pre-sales), Make.com, Firebase, lightweight AI agents, multimodal models
+
 **UX & Design:**
-Figma, Adobe Creative Suite (Photoshop, Illustrator), interaction design, prototyping, user research, usability testing, design systems, accessibility, AR/VR design
+Figma, Adobe Creative Suite, interaction design, prototyping, user research, usability testing, design systems, accessibility (WCAG 2.1/2.2), AR/VR design
 
 **Product & Strategy:**
-Product ownership, product management, backlog management, user story writing, roadmap planning, Design Thinking, digital transformation strategy
+Product ownership, product management, backlog management, user story writing, roadmap planning, Design Thinking, digital transformation strategy, OKRs/KPIs, data-informed prioritisation
 
 **Project Management:**
-Agile (Scrum/Kanban), Azure DevOps, Jira, Confluence, stakeholder management, cross-functional team leadership, distributed team coordination
+Agile / SAFe / Scrum, Azure DevOps, Jira, Confluence, stakeholder management, cross-functional team leadership, distributed team coordination, C-level communication
 
 **Technical familiarity:**
-HTML, CSS, JavaScript (working knowledge), GDPR compliance, API integrations
+HTML, CSS, JavaScript (working knowledge), GDPR compliance, API integrations, SaaS platforms, Azure/GCP familiarity
 
 **Soft skills:**
 User-centric and business-driven mindset, excellent communicator and facilitator, design thinking workshop facilitator, data-driven decision making, fluent storyteller

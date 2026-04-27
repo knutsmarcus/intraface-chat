@@ -177,7 +177,7 @@ export default function ChatInterface() {
           />
           <div>
             <p className="text-sm font-semibold text-gray-900">Marcus Hansson</p>
-            <p className="text-xs text-gray-400">Senior UX &amp; Product Leader</p>
+            <p className="text-xs text-gray-400">Product Manager · UX Leader · AI Consultant</p>
           </div>
         </div>
         <a
