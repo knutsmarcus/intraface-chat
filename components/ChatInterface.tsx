@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import Message, { MessageType } from "./Message";
 import MeetingBookingForm from "./MeetingBookingForm";
 
@@ -194,25 +195,45 @@ export default function ChatInterface() {
       <main className="flex-1 overflow-y-auto px-4 py-6">
         <div className="max-w-2xl mx-auto h-full flex flex-col">
           {!hasMessages && (
-            <div className="flex-1 flex flex-col items-center justify-center text-center">
-              <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            <motion.div
+              className="flex-1 flex flex-col items-center justify-center text-center"
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }}
+            >
+              <motion.h1
+                variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
+                transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                className="text-xl font-semibold text-gray-900 mb-2"
+              >
                 Hi, I&apos;m Marcus&apos;s AI assistant
-              </h1>
-              <p className="text-sm text-gray-500 mb-8 max-w-sm mx-auto">
+              </motion.h1>
+              <motion.p
+                variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
+                transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                className="text-sm text-gray-500 mb-8 max-w-sm mx-auto"
+              >
                 Ask me anything about Marcus&apos;s background, skills, or experience — or paste a job description to check the fit.
-              </p>
-              <div className="flex flex-wrap gap-2 justify-center">
+              </motion.p>
+              <motion.div
+                className="flex flex-wrap gap-2 justify-center"
+                variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
+              >
                 {SUGGESTED_PROMPTS.map((prompt) => (
-                  <button
+                  <motion.button
                     key={prompt}
+                    variants={{ hidden: { opacity: 0, scale: 0.92 }, visible: { opacity: 1, scale: 1 } }}
+                    transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => sendMessage(prompt)}
                     className="text-sm px-4 py-2 border border-gray-200 rounded-full text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
                   >
                     {prompt}
-                  </button>
+                  </motion.button>
                 ))}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           )}
 
           <div role="log" aria-live="polite" aria-label="Chat messages">
@@ -222,12 +243,18 @@ export default function ChatInterface() {
             }
             if (item.type === "booking-form") {
               return (
-                <div key={`booking-form-${idx}`} className="flex justify-start mb-4">
+                <motion.div
+                  key={`booking-form-${idx}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                  className="flex justify-start mb-4"
+                >
                   <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center mr-3 flex-shrink-0 mt-1 overflow-hidden p-1.5">
                     <Image src="/intraface-logo.svg" alt="Intraface" width={20} height={20} className="w-full h-full invert" />
                   </div>
                   <MeetingBookingForm onBooked={handleBookingConfirmed} />
-                </div>
+                </motion.div>
               );
             }
             if (item.type === "booking-confirmed") {
@@ -286,7 +313,7 @@ export default function ChatInterface() {
       {/* Input area */}
       <div className="border-t border-gray-100 px-4 py-4">
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all">
+          <div className={`flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-gray-900 focus-within:border-transparent transition-all ${!hasMessages ? "animate-input-glow" : ""}`}>
             <label htmlFor="chat-input" className="sr-only">Chat message</label>
             <textarea
               ref={inputRef}
@@ -310,16 +337,17 @@ export default function ChatInterface() {
                 </svg>
                 <span className="text-xs">Job fit</span>
               </button>
-              <button
+              <motion.button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || isLoading}
                 aria-label="Send message"
-                className="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-700 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
+                whileTap={!input.trim() || isLoading ? {} : { scale: 0.88 }}
+                className="p-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
-              </button>
+              </motion.button>
             </div>
           </div>
           <p className="text-xs text-center text-gray-300 mt-2">

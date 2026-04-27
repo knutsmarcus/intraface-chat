@@ -25,3 +25,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes input-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(17, 24, 39, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.07), 0 0 24px rgba(17, 24, 39, 0.05); }
+}
+
+.animate-input-glow {
+  animation: input-glow 2.8s ease-in-out infinite;
+}
