@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Message, { MessageType } from "./Message";
 import MeetingBookingForm from "./MeetingBookingForm";
 
@@ -166,9 +167,14 @@ export default function ChatInterface() {
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-bold tracking-tight">IF</span>
-          </div>
+          <Image
+            src="/intraface-logo-blk.png"
+            alt="Intraface"
+            width={100}
+            height={32}
+            className="h-8 w-auto"
+            priority
+          />
           <div>
             <p className="text-sm font-semibold text-gray-900">Marcus Hansson</p>
             <p className="text-xs text-gray-400">Senior UX &amp; Product Leader</p>
@@ -189,8 +195,15 @@ export default function ChatInterface() {
         <div className="max-w-2xl mx-auto">
           {!hasMessages && (
             <div className="text-center py-16">
-              <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <span className="text-white text-xl font-bold">IF</span>
+              <div className="mx-auto mb-5">
+                <Image
+                  src="/intraface-logo-blk.png"
+                  alt="Intraface"
+                  width={160}
+                  height={50}
+                  className="h-12 w-auto"
+                  priority
+                />
               </div>
               <h1 className="text-xl font-semibold text-gray-900 mb-2">
                 Hi, I&apos;m Marcus&apos;s AI assistant
