@@ -65,9 +65,13 @@ body {
   animation: cp-glitch-ghost 6s ease-in-out infinite;
 }
 
-/* Neon text */
-.cp-yellow { color: #FCE300; text-shadow: 0 0 8px rgba(252,227,0,.55), 0 0 20px rgba(252,227,0,.25); }
-.cp-cyan   { color: #00D4FF; text-shadow: 0 0 8px rgba(0,212,255,.55), 0 0 20px rgba(0,212,255,.25); }
+/* Neon text — body (no shadow, crisp) */
+.cp-yellow { color: #FCE300; }
+.cp-cyan   { color: #00D4FF; }
+
+/* Neon text — heading (with glow) */
+.cp-yellow-glow { color: #FCE300; text-shadow: 0 0 8px rgba(252,227,0,.5), 0 0 20px rgba(252,227,0,.2); }
+.cp-cyan-glow   { color: #00D4FF; text-shadow: 0 0 8px rgba(0,212,255,.5), 0 0 20px rgba(0,212,255,.2); }
 
 /* Neon input pulse */
 @keyframes cp-input-pulse {
