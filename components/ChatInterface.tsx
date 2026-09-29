@@ -172,52 +172,95 @@ export default function ChatInterface() {
       )}
 
       {/* Header */}
-      <header className={`relative z-10 flex items-center justify-between px-6 py-4 border-b transition-colors duration-500 ${cp ? "bg-[#0A0A0F]/85 backdrop-blur border-[#FCE300]/60" : "border-gray-100"}`}>
-        <div className="flex items-center gap-3">
+      <header className={`relative z-10 border-b transition-colors duration-500 ${cp ? "bg-[#0A0A0F]/85 backdrop-blur border-[#FCE300]/60" : "border-gray-100"}`}>
+        {/* Mobile: stacked centered layout */}
+        <div className="flex flex-col items-center gap-1 px-4 pt-3 pb-2 md:hidden">
           <Image
             src="/intraface-logo.svg"
             alt="Intraface"
-            width={90}
-            height={24}
-            className={`h-5 w-auto transition-all duration-500 ${cp ? "[filter:invert(86%)_sepia(77%)_saturate(600%)_hue-rotate(3deg)_brightness(105%)]" : ""}`}
+            width={60}
+            height={16}
+            className={`h-4 w-auto transition-all duration-500 ${cp ? "[filter:invert(86%)_sepia(77%)_saturate(600%)_hue-rotate(3deg)_brightness(105%)]" : ""}`}
             priority
           />
-          <div>
-            <p className={`font-semibold transition-colors duration-300 ${cp ? "text-xs cp-yellow font-mono tracking-widest uppercase" : "text-sm text-gray-900"}`}>
-              {cp ? "MARCUS.HANSSON" : "Marcus Hansson"}
-            </p>
-            <p className={`text-xs transition-colors duration-300 ${cp ? "cp-cyan font-mono tracking-wider text-[10px]" : "text-gray-600"}`}>
-              {cp ? "PRODUCT_MGR // UX_LEAD // AI_CONSULTANT" : "Product Manager · UX Leader · AI Consultant"}
-            </p>
+          <p className={`font-semibold transition-colors duration-300 ${cp ? "text-xs cp-yellow font-mono tracking-widest uppercase" : "text-sm text-gray-900"}`}>
+            {cp ? "MARCUS.HANSSON" : "Marcus Hansson"}
+          </p>
+          <p className={`transition-colors duration-300 ${cp ? "cp-cyan font-mono tracking-wider text-[9px]" : "text-xs text-gray-500"}`}>
+            {cp ? "PRODUCT_MGR // UX_LEAD // AI_CONSULTANT" : "Product Manager · UX Leader · AI Consultant"}
+          </p>
+          <div className="flex items-center gap-3 mt-1">
+            <a
+              href="https://linkedin.com/in/knutsmarcushansson"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded ${
+                cp
+                  ? "cp-cyan font-mono hover:text-white focus-visible:ring-[#FCE300]"
+                  : "text-gray-500 hover:text-gray-700 focus-visible:ring-gray-900"
+              }`}
+            >
+              {cp ? "LINKEDIN ↗" : "LinkedIn →"}
+            </a>
+            <button
+              onClick={toggleTheme}
+              title={cp ? "Switch to default theme" : "Switch to Cyberpunk theme"}
+              className={`text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
+                cp
+                  ? "font-mono text-[#FCE300] border border-[#FCE300]/60 px-3 py-1 hover:bg-[#FCE300] hover:text-black focus-visible:ring-[#FCE300]"
+                  : "text-gray-400 border border-gray-200 px-3 py-1 rounded-full hover:border-gray-400 hover:text-gray-700 focus-visible:ring-gray-900"
+              }`}
+            >
+              {cp ? "[ EXIT SIM ]" : "⚡ Cyberpunk"}
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <a
-            href="https://linkedin.com/in/knutsmarcushansson"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded ${
-              cp
-                ? "cp-cyan font-mono hover:text-white focus-visible:ring-[#FCE300]"
-                : "text-gray-500 hover:text-gray-700 focus-visible:ring-gray-900"
-            }`}
-          >
-            {cp ? "LINKEDIN ↗" : "LinkedIn →"}
-          </a>
-
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            title={cp ? "Switch to default theme" : "Switch to Cyberpunk theme"}
-            className={`text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
-              cp
-                ? "font-mono text-[#FCE300] border border-[#FCE300]/60 px-3 py-1 hover:bg-[#FCE300] hover:text-black focus-visible:ring-[#FCE300]"
-                : "text-gray-400 border border-gray-200 px-3 py-1 rounded-full hover:border-gray-400 hover:text-gray-700 focus-visible:ring-gray-900"
-            }`}
-          >
-            {cp ? "[ EXIT SIM ]" : "⚡ Cyberpunk"}
-          </button>
+        {/* Desktop: horizontal layout */}
+        <div className="hidden md:flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/intraface-logo.svg"
+              alt="Intraface"
+              width={90}
+              height={24}
+              className={`h-5 w-auto transition-all duration-500 ${cp ? "[filter:invert(86%)_sepia(77%)_saturate(600%)_hue-rotate(3deg)_brightness(105%)]" : ""}`}
+              priority
+            />
+            <div>
+              <p className={`font-semibold transition-colors duration-300 ${cp ? "text-xs cp-yellow font-mono tracking-widest uppercase" : "text-sm text-gray-900"}`}>
+                {cp ? "MARCUS.HANSSON" : "Marcus Hansson"}
+              </p>
+              <p className={`text-xs transition-colors duration-300 ${cp ? "cp-cyan font-mono tracking-wider text-[10px]" : "text-gray-600"}`}>
+                {cp ? "PRODUCT_MGR // UX_LEAD // AI_CONSULTANT" : "Product Manager · UX Leader · AI Consultant"}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://linkedin.com/in/knutsmarcushansson"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded ${
+                cp
+                  ? "cp-cyan font-mono hover:text-white focus-visible:ring-[#FCE300]"
+                  : "text-gray-500 hover:text-gray-700 focus-visible:ring-gray-900"
+              }`}
+            >
+              {cp ? "LINKEDIN ↗" : "LinkedIn →"}
+            </a>
+            <button
+              onClick={toggleTheme}
+              title={cp ? "Switch to default theme" : "Switch to Cyberpunk theme"}
+              className={`text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
+                cp
+                  ? "font-mono text-[#FCE300] border border-[#FCE300]/60 px-3 py-1 hover:bg-[#FCE300] hover:text-black focus-visible:ring-[#FCE300]"
+                  : "text-gray-400 border border-gray-200 px-3 py-1 rounded-full hover:border-gray-400 hover:text-gray-700 focus-visible:ring-gray-900"
+              }`}
+            >
+              {cp ? "[ EXIT SIM ]" : "⚡ Cyberpunk"}
+            </button>
+          </div>
         </div>
       </header>
 
